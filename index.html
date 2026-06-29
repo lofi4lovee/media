@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Media Search & Downloader</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-main-row">
+                <div class="logo-wrapper">
+                    <i class="fa-solid fa-cloud-arrow-down logo-icon"></i>
+                    <h1>Media <span class="accent-text">Downloader</span></h1>
+                </div>
+                <div class="theme-toggle-container">
+                    <span class="theme-label"><i class="fa-solid fa-moon"></i></span>
+                    <label class="switch">
+                        <input type="checkbox" id="theme-checkbox">
+                        <span class="switch-slider"></span>
+                    </label>
+                    <span class="theme-label"><i class="fa-solid fa-sun"></i></span>
+                </div>
+            </div>
+            <p class="subtitle">Search and Download HD Images & Songs Instantly</p>
+        </header>
+
+        <!-- Tabs -->
+        <div class="tabs-container">
+            <button class="tab-btn active" data-tab="images-tab"><i class="fa-solid fa-image"></i> Images</button>
+            <button class="tab-btn" data-tab="songs-tab"><i class="fa-solid fa-music"></i> Songs</button>
+        </div>
+
+        <!-- Main Workspace -->
+        <main class="workspace">
+            <!-- Images Tab -->
+            <section id="images-tab" class="tab-content active">
+                <div class="card panel-section">
+                    <div class="search-controls">
+                        <div class="search-input-wrapper">
+                            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                            <input type="text" id="img-search-input" placeholder="Search for HD Images (e.g., nature, cars)..." value="Nature">
+                        </div>
+                        <div class="aspect-ratio-wrapper">
+                            <select id="img-ratio-select">
+                                <option value="">All Orientations</option>
+                                <option value="landscape">Landscape</option>
+                                <option value="portrait">Portrait</option>
+                                <option value="square">Square</option>
+                            </select>
+                        </div>
+                        <div class="button-group flex-row">
+                            <button id="btn-search-img" class="btn btn-primary">
+                                <i class="fa-solid fa-arrows-rotate spinner-icon hidden" id="img-spinner"></i>
+                                <i class="fa-solid fa-magnifying-glass"></i> Search
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Results Grid -->
+                    <div class="gallery-container">
+                        <div class="image-grid" id="image-grid">
+                            <!-- Image cards will be loaded here dynamically -->
+                        </div>
+                        <div class="load-more-wrapper">
+                            <button id="btn-load-more-img" class="btn btn-secondary hidden">
+                                <i class="fa-solid fa-spinner spinner-icon hidden" id="load-more-img-spinner"></i>
+                                Load More Images
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Songs Tab -->
+            <section id="songs-tab" class="tab-content hidden">
+                <div class="card panel-section">
+                    <div class="search-controls">
+                        <div class="search-input-wrapper">
+                            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                            <input type="text" id="song-search-input" placeholder="Search for songs, artists..." value="Arijit Singh">
+                        </div>
+                        <div class="custom-select-wrapper">
+                            <i class="fa-solid fa-music select-icon"></i>
+                            <select id="song-source-select" class="source-select">
+                                <option value="saavn">JioSaavn</option>
+                                <option value="itunes">Apple iTunes</option>
+                            </select>
+                            <i class="fa-solid fa-chevron-down select-arrow"></i>
+                        </div>
+                        <div class="button-group flex-row">
+                            <button id="btn-search-song" class="btn btn-primary">
+                                <i class="fa-solid fa-arrows-rotate spinner-icon hidden" id="song-spinner"></i>
+                                <i class="fa-solid fa-magnifying-glass"></i> Search Songs
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Songs List -->
+                    <div class="songs-container">
+                        <div class="songs-list" id="songs-list">
+                            <!-- Song items will be loaded here dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Image Preview Modal -->
+    <div class="modal-overlay hidden" id="modal-image-preview">
+        <div class="modal-content image-preview-content">
+            <button class="btn-close-modal" id="btn-close-preview"><i class="fa-solid fa-xmark"></i></button>
+            <div class="preview-img-container" id="preview-img-container">
+                <div class="img-loading-overlay hidden" id="preview-loading" style="position: absolute; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 10;">
+                    <i class="fa-solid fa-spinner spinner-icon" style="font-size: 2rem; color: var(--accent);"></i>
+                </div>
+                <img id="preview-modal-img" src="" alt="Preview">
+            </div>
+            <div class="preset-dimensions">
+                <label>Choose Size:</label>
+                <div class="preset-grid">
+                    <button class="preset-btn active" data-w="" data-h="">Original</button>
+                    <button class="preset-btn" data-w="1080" data-h="1080">Insta Post (1:1)</button>
+                    <button class="preset-btn" data-w="1080" data-h="1350">Insta Portrait (4:5)</button>
+                    <button class="preset-btn" data-w="1080" data-h="1920">Story / Reel (9:16)</button>
+                    <button class="preset-btn" data-w="1200" data-h="630">FB Post (1.9:1)</button>
+                    <button class="preset-btn" id="preset-custom">Custom px</button>
+                </div>
+            </div>
+            
+            <div class="custom-dimensions hidden" id="custom-inputs-wrapper">
+                <input type="number" id="custom-w" placeholder="Width (px)">
+                <span>x</span>
+                <input type="number" id="custom-h" placeholder="Height (px)">
+            </div>
+            <div class="preview-actions">
+                <button id="btn-modal-download" class="btn btn-download-img btn-large">
+                    <i class="fa-solid fa-download"></i> Download High Quality (HD)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden audio element for playback -->
+    <audio id="audio-player" class="hidden"></audio>
+
+    <script src="app.js"></script>
+</body>
+</html>
